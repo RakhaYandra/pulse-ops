@@ -1,0 +1,21 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose files valid
+        run: |
+          JWT_SECRET=ci-dummy GF_SECURITY_ADMIN_PASSWORD=ci \
+            docker compose -f docker-compose.yml config -q
+          JWT_SECRET=ci-dummy GF_SECURITY_ADMIN_PASSWORD=ci \
+            docker compose -f docker-compose.yml -f docker-compose.observability.yml config -q
+          echo COMPOSE_OK
+      - name: Prometheus + alert rules valid
+        run: |
+          docker run --rm -v "$PWD/observability:/etc/prometheus:ro" \
+            prom/prometheus:v3.4.0 --config.file=/etc/prometheus/prometheus.yml \
+            --check-config --check-rule-files 2>&1 | tail -2
+      - name: Grafana dashboard JSON valid
+        run: python3 -c "import json; json.load(open('observability/grafana/dashboards/pulse.json')); print('DASHBOARD_OK')"
