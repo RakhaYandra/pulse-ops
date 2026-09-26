@@ -32,7 +32,7 @@ services:
 
   api:
     restart: unless-stopped
-    build: ./backend
+    build: ../pulse/backend  # requires pulse checkout alongside (see README)
     command: ["-mode=api"]
     ports:
       - "8080:8080"
@@ -53,7 +53,7 @@ services:
 
   scheduler:
     restart: unless-stopped
-    build: ./backend
+    build: ../pulse/backend  # requires pulse checkout alongside (see README)
     command: ["-mode=scheduler"]
     ports:
       - "9105:9100"
@@ -72,7 +72,7 @@ services:
   # so each process's /metrics is scrapable. Bench starts/stops subsets.
   worker-1:
     restart: unless-stopped
-    build: ./backend
+    build: ../pulse/backend  # requires pulse checkout alongside (see README)
     command: ["-mode=worker"]
     ports:
       - "9102:9100"
@@ -91,7 +91,7 @@ services:
 
   worker-2:
     restart: unless-stopped
-    build: ./backend
+    build: ../pulse/backend  # requires pulse checkout alongside (see README)
     command: ["-mode=worker"]
     ports:
       - "9103:9100"
@@ -110,7 +110,7 @@ services:
 
   worker-3:
     restart: unless-stopped
-    build: ./backend
+    build: ../pulse/backend  # requires pulse checkout alongside (see README)
     command: ["-mode=worker"]
     ports:
       - "9104:9100"
@@ -127,7 +127,7 @@ services:
 
   worker-4:
     restart: unless-stopped
-    build: ./backend
+    build: ../pulse/backend  # requires pulse checkout alongside (see README)
     command: ["-mode=worker"]
     ports:
       - "9106:9100"
@@ -147,7 +147,7 @@ services:
   stub:
     restart: unless-stopped
     build:
-      context: ./bench/stub
+      context: ../pulse-qa/bench/stub  # bench rig lives in pulse-qa repo
       dockerfile_inline: |
         FROM golang:1.27-alpine AS b
         WORKDIR /s
